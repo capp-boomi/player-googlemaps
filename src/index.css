@@ -1,4 +1,73 @@
-.custom-component {
-    font-weight: italic;
-    color: red;
+
+
+
+.mw-bs .main:first-of-type{
+	margin-top:0;
+}
+.mw-bs .main{
+	margin-bottom:0;
+}
+.mw-bs h1,
+.mw-bs h2,
+.mw-bs h3,
+.mw-bs h4,
+.mw-bs h5 {
+	color:#43A047;
+	font-weight:300;
+	text-transform:uppercase;
+}
+.flex-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-content: stretch;
+	align-items: flex-start;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background:#000000;
+}
+
+.content-wrapper {
+	order: 0;
+	flex: 0 1 30%;
+	align-self: auto;
+	background: rgba(0, 0, 0, 0.5);
+	color:#fff;
+	overflow-x:none;
+	overflow-y: auto;
+	padding:10px;
+	height:100%;
+}
+.data-related{
+	font-weight:500;
+	color:#43A047;
+}
+#map-canvas {
+	order: 1;
+	flex: 0 1 80%;
+	align-self: auto;
+	height:100vh;
+	width:80%;
+}
+.main {
+	width: 90%;
+	padding: 20px;
+	font-size: 1.2em;
+}
+
+
+#ac-input {
+	color:#000;
+	width: 50%;
+	height: 50px;
+	padding: 10px;
+	transform:translateY(15%);
+}
+
+#autocomplete-input {
+	color:#000;
 }
