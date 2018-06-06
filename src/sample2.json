@@ -1,0 +1,51 @@
+[{
+        "name": "HE12",
+        "latitude": "1.2881500",
+        "longitude": "103.8180400"
+    },
+    {
+        "name": "HLM",
+        "latitude": "1.284889",
+        "longitude": "103.845440"
+    },
+    {
+        "name": "RHM",
+        "latitude": "1.286261",
+        "longitude": "103.818517"
+    },
+    {
+        "name": "BM29",
+        "latitude": "1.283766",
+        "longitude": "103.817007"
+    },
+    {
+        "name": "Q81",
+        "latitude": "1.307625",
+        "longitude": "103.793446"
+    },
+    {
+        "name": "C20",
+        "latitude": "1.313094",
+        "longitude": "103.765386"
+    },
+    {
+        "name": "FR3M",
+        "latitude": "1.312563",
+        "longitude": "103.804460"
+    },
+    {
+        "name": "C32",
+        "latitude": "1.308065",
+        "longitude": "103.760118"
+    },
+    {
+        "name": "C6",
+        "latitude": "1.315214",
+        "longitude": "103.768604"
+    },
+    {
+        "name": "TG2",
+        "latitude": "1.321039",
+        "longitude": "103.738193"
+    }
+]
