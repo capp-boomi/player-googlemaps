@@ -5,99 +5,107 @@ declare var google: any;
 import * as React from 'react';
 import './index.css';
 
-/* TODO 
-    - code clean up
-    - seperate properties, states
-    - seperate component
-    - adding dynamic longitude latidue 
-*/
-
-
-let marker, map, location, place, infowindow;
-
 class googleMaps extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
         this.state = {
-            zoom: 14,
-            maptype: 'roadmap', // terrain // roadmap
+            zoom: 12,
+            maptype: 'roadmap', // terrain // roadmap  //hybrid
             heading: 90,
             tilt: 75,
             place_formatted: '',
             place_id: '',
             place_location: '',
             rotateControl: true,
-            lat: 1.34,
-            long: 103.54,
+            lat: 1.2966,
+            long: 103.7764,
             markers: []
         }
-    }    
-    componentDidMount () { 
-        // loading external json 
-        fetch('https://files-manywho-com.s3.amazonaws.com/f0328913-385d-4f9a-94c2-d06f32e27e10/parking.json')
-            .then(response => response.json())
-            .then(results => { 
-            // looping external json displaying markers for longitude latiude. 
-            this.setState({markers: results.data});
-                console.log("data set", results); 
-                results.map((result, i) => {
-                    marker = new google.maps.Marker({
-                        position: new google.maps.LatLng(result.latitude, result.longitude),
-                        map: map,
-                        title: result.name
-                    });
-                    console.log("data set", result.data); 
-                });
-            });
-    
+    }
+    componentDidMount () {
+        // Get the component's model, which includes any values bound to it
+        const model = manywho.model.getComponent(this.props.id, this.props.flowKey);
+        const columns = manywho.component.getDisplayColumns(model.columns);
+
+        // Create the map in an element on the page
         let map = new google.maps.Map(document.getElementById('map-canvas'), {
             center: { lat: this.state.lat, lng: this.state.long },
             zoom: this.state.zoom,
             mapTypeId: this.state.maptype,
             heading: this.state.heading,
+            styles:[{
+                featureType:"poi",
+                elementType:"labels",
+            }],
             tilt: this.state.tilt,
         });
 
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(1.34, 103.54),
-            map: map,
-        });
-        
-        
+        // Loop through all the data in the value this component is bound to
+        model.objectData.forEach(result => {
+            // Assume the latitude is the 1st "display column" set in the page component
+            const latitude = result.properties.find(property => property.typeElementPropertyId === columns[0].typeElementPropertyId);
 
-        // adding auto complete input field
-        let inputNode = document.getElementById('ac-input');
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(inputNode)
-        let autoComplete = new google.maps.places.Autocomplete(inputNode);
+            // Assume the longitude is the 2nd "display column" set in the page component
+            const longitude = result.properties.find(property => property.typeElementPropertyId === columns[1].typeElementPropertyId);
 
-        autoComplete.addListener('place_changed', () => {
-            place = autoComplete.getPlace();
-            location = place.geometry.location;
+            // Assume the name is the 3rd "display column" set in the page component
+            const name = result.properties.find(property => property.typeElementPropertyId === columns[2].typeElementPropertyId);
 
-            this.setState({
-                place_formatted: place.formatted_address,
-                place_id: place.place_id,
-                place_location: location.toString(),
+            // Assume the available spots is the 4th "display column" set in the page component
+            const avail = result.properties.find(property => property.typeElementPropertyId === columns[3].typeElementPropertyId);
+
+            // Assume the total spots is the 5th "display column" set in the page component
+            const capacity = result.properties.find(property => property.typeElementPropertyId === columns[4].typeElementPropertyId);
+
+            //CC Info Window
+            var contentString = '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h5>Carpark:  ' + name.contentValue +'</h5>'+
+              '<hr />'+
+              '<p>Available Spots/Total:</p>'+
+              avail.contentValue + '/' + capacity.contentValue+
+              '<hr />'+
+              '<a target="blank" href="https://www.google.com/maps/dir/?api=1&origin=1.2966,103.776&destination=' + latitude.contentValue + ',' + longitude.contentValue + '">'+
+              'Click for Directions</a> '+
+              '<hr />' +
+              '<p>Lat/Long:</p>' + latitude.contentValue + '/' + longitude.contentValue+
+              '</div>'+
+              '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+              });
+
+            //CC Boomi atom logos, goes with icon in marker var defintion
+            var image = 'https://files-manywho-com.s3.amazonaws.com/97d13c5b-c52a-4f69-a8d7-eee246bbacee/atom.png';
+
+            // Add the list object as a marker on the map
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(latitude.contentValue, longitude.contentValue),
+                map: map,
+                animation: google.maps.Animation.DROP,
+                title: name.contentValue
+                //icon: image  //Uncomment to make your markers boomi logo
             });
 
-            // display selected place on map
-            map.fitBounds(place.geometry.viewport);
-            map.setCenter(location);
+            // Zoom to 9 when clicking on marker
+            google.maps.event.addListener(marker,'click',function() {
+              map.setZoom(14);
+              infowindow.open(map, marker);
+              });
 
-            marker.setPlace({
-                placeId: place.place_id,
-                location: location,
-            });
         });
+
     }
     render() {
         return (
             <div className="custom-component flex-container">
-                <div id="map-canvas"></div>    
+                <div id="map-canvas"></div>
                 <div className="content-wrapper">
                     <div id='autocomplete-input'>
-                        <input id="ac-input" type='text' placeholder='Enter a location' />
+                        {/* <input id="ac-input" type='text' placeholder='Enter a location' /> */}
                     </div>
                 </div>
             </div>
@@ -105,5 +113,5 @@ class googleMaps extends React.Component<any, any> {
     }
 }
 
-manywho.component.register('custom-component', googleMaps);
+manywho.component.register('google-map', googleMaps);
 export default googleMaps;
