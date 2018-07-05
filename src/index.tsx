@@ -74,12 +74,27 @@ class googleMaps extends React.Component<any, any> {
               '</div>'+
               '</div>';
 
+            var contentString2 = '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h5> You are here! </h5>'+
+              '<hr />'+
+              '<p>Lat/Long: 1.2966 / 103.7764</p>'+
+              '</div>'+
+              '</div>';
+
+            // var youAreHere = '<div id="content"><h5>You Are Here</h5></div>';
+
             var infowindow = new google.maps.InfoWindow({
                 content: contentString,
               });
 
+            var infowindow2 = new google.maps.InfoWindow({
+                content: contentString2,
+              });
+
             //CC Boomi atom logos, goes with icon in marker var defintion
-            var image = 'https://files-manywho-com.s3.amazonaws.com/97d13c5b-c52a-4f69-a8d7-eee246bbacee/atom.png';
+            var image = 'https://files-manywho-com.s3.amazonaws.com/97d13c5b-c52a-4f69-a8d7-eee246bbacee/atom9.png';
 
             // Add the list object as a marker on the map
             var marker = new google.maps.Marker({
@@ -87,13 +102,29 @@ class googleMaps extends React.Component<any, any> {
                 map: map,
                 animation: google.maps.Animation.DROP,
                 title: name.contentValue
-                //icon: image  //Uncomment to make your markers boomi logo
+            });
+
+            //You are here Boomi Marker
+            var marker2 = new google.maps.Marker({
+                position: new google.maps.LatLng(1.2966, 103.7764),
+                map: map,
+                animation: google.maps.Animation.DROP,
+                title: name.contentValue,
+                icon: image
             });
 
             // Zoom to 9 when clicking on marker
             google.maps.event.addListener(marker,'click',function() {
               map.setZoom(14);
               infowindow.open(map, marker);
+              });
+
+            // Zoom to 9 when clicking on you're here marker
+            google.maps.event.addListener(marker2,'click',function() {
+              map.setZoom(12);
+              infowindow2.open(map, marker2);
+              marker2.setAnimation(google.maps.Animation.BOUNCE);
+              setTimeout(function(){ marker2.setAnimation(null); }, 750);
               });
 
         });
